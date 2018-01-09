@@ -9,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
  * Created by adamc on 1/7/2018.
  */
 
+// extended by CrimeActivity and CrimeListActivity to display the Fragment onscreen
+
 public abstract class SingleFragmentActivity extends AppCompatActivity {
 
     protected abstract Fragment createFragment();

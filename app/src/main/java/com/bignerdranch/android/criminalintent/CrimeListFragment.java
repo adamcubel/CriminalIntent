@@ -20,17 +20,67 @@ import java.util.List;
  * Created by adamc on 1/7/2018.
  */
 
+// This class uses the recycler view to display the fragment on screen
+// implementing the necessary methods to create what appears to be a scrolling list of
+// crime fragments on the screen
 public class CrimeListFragment extends Fragment {
     private RecyclerView mCrimeRecyclerView;
     private CrimeAdapter mAdapter;
+    private int mAdapterPosition;
+    private static final String SAVED_POSITION = "SAVED_POSITION";
 
-    private TextView mTitleTextView;
-    private TextView mDateTextView;
-    private ImageView mSolvedImageView;
+	@Override
+	public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_crime_list, container, false);
+
+        mCrimeRecyclerView = (RecyclerView) view.findViewById(R.id.crime_recycler_view);
+        mCrimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        if (savedInstanceState != null) {
+            mAdapterPosition = savedInstanceState.getInt(SAVED_POSITION);
+        }
+
+        updateUI();
+        return view;
+    }
+
+    @Override
+    public void onResume() {
+	    super.onResume();
+	    updateUI();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle onSavedInstanceState) {
+        super.onSaveInstanceState(onSavedInstanceState);
+        onSavedInstanceState.putSerializable(SAVED_POSITION, mAdapterPosition);
+    }
+
+
+    private void updateUI() {
+        CrimeLab crimeLab = CrimeLab.get(getActivity());
+        List<Crime> crimes = crimeLab.getCrimes();
+        if (mAdapter == null) {
+            mAdapter = new CrimeAdapter(crimes);
+            mCrimeRecyclerView.setAdapter(mAdapter);
+        }
+        else {
+            mAdapter.notifyItemChanged(mAdapterPosition);
+        }
+    }
+
 
     private class CrimeHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private Crime mCrime;
+		
+		private TextView mTitleTextView;
+	    private TextView mDateTextView;
+	    private ImageView mSolvedImageView;
+
+
 
         public CrimeHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.list_item_crime, parent, false));
@@ -51,6 +101,7 @@ public class CrimeListFragment extends Fragment {
         @Override
         public void onClick(View view) {
             Log.d("BUTTON", "PRESSED");
+            mAdapterPosition = getAdapterPosition();
             Intent intent = CrimeActivity.newIntent(getActivity(), mCrime.getId());
             startActivity(intent);
         }
@@ -80,26 +131,5 @@ public class CrimeListFragment extends Fragment {
         public int getItemCount() {
             return mCrimes.size();
         }
-    }
-
-    public View onCreateView(LayoutInflater inflater,
-                             ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_crime_list, container, false);
-
-        mCrimeRecyclerView = (RecyclerView) view
-                .findViewById(R.id.crime_recycler_view);
-        mCrimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-        updateUI();
-        return view;
-    }
-
-    private void updateUI() {
-        CrimeLab crimeLab = CrimeLab.get(getActivity());
-        List<Crime> crimes = crimeLab.getCrimes();
-
-        mAdapter = new CrimeAdapter(crimes);
-        mCrimeRecyclerView.setAdapter(mAdapter);
     }
 }

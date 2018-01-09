@@ -34,8 +34,8 @@ public class Crime {
         return mDate;
     }
 
-    public void setDate(Date mDate) {
-        this.mDate = mDate;
+    public void setDate(Date date) {
+        mDate = date;
     }
 
     public boolean isSolved() {
@@ -43,6 +43,6 @@ public class Crime {
     }
 
     public void setSolved(boolean solved) {
-        this.mSolved = solved;
+        mSolved = solved;
     }
 }
