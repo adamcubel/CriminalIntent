@@ -1,8 +1,10 @@
 package com.bignerdranch.android.criminalintent;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -41,7 +43,7 @@ public class CrimeFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Pulls the UUID from the intent used to start the CrimeActivity
+        // Pulls the UUID from the intent used to start the CrimePagerActivity
         UUID crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
         // using the crimeId to get the associated crime from CrimeLab
         mCrime = CrimeLab.get(getActivity()).getCrime(crimeId);
@@ -74,7 +76,7 @@ public class CrimeFragment extends Fragment {
         mDateButton = (Button) v.findViewById(R.id.crime_date);
         mDateButton.setText(mCrime.getDate().toString());
         // disables the button from being able to be pressed by the user.
-        mDateButton.setEnabled(false);
+        mDateButton.setEnabled(true);
 
         // updates crime solved field if checkbox is ticked onscreen
         mSolvedCheckbox = (CheckBox) v.findViewById(R.id.crime_solved);
@@ -85,8 +87,6 @@ public class CrimeFragment extends Fragment {
                 mCrime.setSolved(isChecked);
             }
         });
-
-
 
         return v;
     }
