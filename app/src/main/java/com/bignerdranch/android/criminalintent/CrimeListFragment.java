@@ -80,6 +80,8 @@ public class CrimeListFragment extends Fragment {
 	    private TextView mDateTextView;
 	    private ImageView mSolvedImageView;
 
+
+
         public CrimeHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.list_item_crime, parent, false));
             itemView.setOnClickListener(this);
@@ -100,7 +102,7 @@ public class CrimeListFragment extends Fragment {
         public void onClick(View view) {
             Log.d("BUTTON", "PRESSED");
             mAdapterPosition = getAdapterPosition();
-            Intent intent = CrimePagerActivity.newIntent(getActivity(), mCrime.getId());
+            Intent intent = CrimeActivity.newIntent(getActivity(), mCrime.getId());
             startActivity(intent);
         }
     }
