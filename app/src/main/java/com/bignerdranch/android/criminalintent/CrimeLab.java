@@ -11,7 +11,7 @@ import java.util.UUID;
 public class CrimeLab {
     public static CrimeLab sCrimeLab;
 
-    private Map<UUID, Crime> mCrimes;
+    private List<Crime> mCrimes;
 
 
 
@@ -23,24 +23,32 @@ public class CrimeLab {
         return sCrimeLab;
     }
 
+    public void addCrime(Crime c) {
+        mCrimes.add(c);
+    }
+
+    public void deleteCrime(Crime c) {
+        mCrimes.remove(c);
+    }
+
     // private controller prevents other classes from being able to create an instance of this object,
     // bypassing the get() method
     private CrimeLab(Context context) {
-        mCrimes = new LinkedHashMap<>();
-        for (int i = 0 ; i < 100 ; i++) {
-            Crime crime = new Crime();
-            crime.setTitle("Crime #" + i);
-            crime.setSolved(i % 2 == 0);
-            mCrimes.put(crime.getId(), crime);
-        }
+        mCrimes = new ArrayList<>();
     }
 
     public List<Crime> getCrimes() {
-        return new ArrayList<>(mCrimes.values());
+        return mCrimes;
     }
 
     public Crime getCrime(UUID id) {
-        return mCrimes.get(id);
+        for (Crime crime : mCrimes) {
+            if (crime.getId().equals(id)) {
+                return crime;
+            }
+        }
+
+        return null;
     }
 
 
