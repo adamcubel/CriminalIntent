@@ -19,6 +19,12 @@
             android:name=".CrimePagerActivity"
             android:parentActivityName=".CrimeListActivity">
         </activity>
+        <provider
+            android:authorities="com.bignerdranch.android.criminalintent.fileprovider"
+            android:name="android.support.v4.content.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+        </provider>
     </application>
 
 </manifest>

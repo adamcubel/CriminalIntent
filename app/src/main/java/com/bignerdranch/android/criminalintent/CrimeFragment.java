@@ -25,6 +25,9 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 
 import android.text.format.DateFormat;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+
 import java.util.Date;
 import java.util.UUID;
 
@@ -47,6 +50,8 @@ public class CrimeFragment extends Fragment {
     private Button mTimeButton;
     private CheckBox mSolvedCheckbox;
     private Button mSendCrimeButton;
+    private ImageButton mPhotoButton;
+    private ImageView mPhotoView;
 
     public static CrimeFragment newInstance(UUID crimeId) {
         Bundle args = new Bundle();
@@ -172,6 +177,9 @@ public class CrimeFragment extends Fragment {
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_crime, container, false);
 
+        mPhotoButton = (ImageButton) v.findViewById(R.id.crime_camera);
+        mPhotoView = (ImageView) v.findViewById(R.id.crime_photo);
+
         mTitleField = (EditText) v.findViewById(R.id.crime_title);
         mTitleField.setText(mCrime.getTitle());
         mTitleField.addTextChangedListener(new TextWatcher() {
@@ -255,7 +263,7 @@ public class CrimeFragment extends Fragment {
                                           .setText(getCrimeReport())
                                           .startChooser();
 
-
+                // Kept in case of future chapters referencing...
                 //Intent intent = new Intent(Intent.ACTION_SEND);
                 //intent.setType("text/plain");
                 //intent.putExtra(Intent.EXTRA_TEXT, getCrimeReport());
