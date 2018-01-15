@@ -60,6 +60,13 @@ public class CrimeFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        CrimeLab.get(getActivity()).updateCrime(mCrime);
+    }
+
     // Processes the intent handed back once the user completes use of the DatePickerFragment
     // Changes the underlying value for the "crime" and updates the button text
     @Override
