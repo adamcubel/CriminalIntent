@@ -14,11 +14,12 @@ public class PictureUtils {
         Point size = new Point();
         activity.getWindowManager().getDefaultDisplay().getSize(size);
 
+
         return getScaledBitmap(path, size.x, size.y);
     }
 
     public static Bitmap getScaledBitmap(String path, int destWidth, int destHeight) {
-        // Read in the dimenstions of the image on disk
+        // Read in the dimensions of the image on disk
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds= true;
         BitmapFactory.decodeFile(path, options);

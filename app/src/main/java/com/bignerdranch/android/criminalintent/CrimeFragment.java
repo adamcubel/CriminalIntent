@@ -23,6 +23,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -61,6 +62,9 @@ public class CrimeFragment extends Fragment {
     private ImageButton mPhotoButton;
     private ImageView mPhotoView;
     private File mPhotoFile;
+
+    private int mPhotoWidth;
+    private int mPhotoHeight;
 
     public static CrimeFragment newInstance(UUID crimeId) {
         Bundle args = new Bundle();
@@ -172,7 +176,7 @@ public class CrimeFragment extends Fragment {
             mPhotoView.setImageDrawable(null);
         }
         else {
-            Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), getActivity());
+            Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), mPhotoWidth, mPhotoHeight);
             mPhotoView.setImageBitmap(bitmap);
         }
     }
@@ -208,6 +212,8 @@ public class CrimeFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_crime, container, false);
         PackageManager packageManager = getActivity().getPackageManager();
+
+        // Verify that there is a camera application on the device
         boolean canTakePhoto = mPhotoFile != null && captureImage.resolveActivity(packageManager) != null;
 
 
@@ -233,6 +239,33 @@ public class CrimeFragment extends Fragment {
             }
         });
 
+        mPhotoView = (ImageView) v.findViewById(R.id.crime_photo);
+        updatePhotoView();
+        mPhotoView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mPhotoFile == null || !mPhotoFile.exists()) {
+                    return;
+                }
+                FragmentManager manager = getFragmentManager();
+                CrimePhotoDialogFragment dialog = CrimePhotoDialogFragment.newInstance(mPhotoFile);
+                dialog.show(manager, DIALOG_PHOTO);
+            }
+        });
+
+        ViewTreeObserver observer = mPhotoView.getViewTreeObserver();
+        if (observer.isAlive()) {
+            observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    mPhotoView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    mPhotoWidth = mPhotoView.getMeasuredWidth();
+                    mPhotoHeight = mPhotoView.getMeasuredHeight();
+                    updatePhotoView();
+                }
+            });
+        }
+
         mTitleField = (EditText) v.findViewById(R.id.crime_title);
         mTitleField.setText(mCrime.getTitle());
         mTitleField.addTextChangedListener(new TextWatcher() {
@@ -249,20 +282,6 @@ public class CrimeFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
                 // also left intentionally blank
-            }
-        });
-
-        mPhotoView = (ImageView) v.findViewById(R.id.crime_photo);
-        updatePhotoView();
-        mPhotoView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mPhotoFile == null || !mPhotoFile.exists()) {
-                    return;
-                }
-                FragmentManager manager = getFragmentManager();
-                CrimePhotoDialogFragment dialog = CrimePhotoDialogFragment.newInstance(mPhotoFile);
-                dialog.show(manager, DIALOG_PHOTO);
             }
         });
 
