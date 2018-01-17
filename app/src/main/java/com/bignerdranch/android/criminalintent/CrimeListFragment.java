@@ -1,5 +1,6 @@
 package com.bignerdranch.android.criminalintent;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -36,8 +37,25 @@ public class CrimeListFragment extends Fragment {
     private boolean mSubtitleVisible;
     private static final String SAVED_POSITION = "SAVED_POSITION";
     private static final String SAVED_SUBTITLE_VISIBLE = "subtitle";
+    private Callbacks mCallbacks;
 
-	@Override
+	public interface Callbacks {
+	    void onCrimeSelected(Crime crime);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+	    super.onAttach(context);
+	    mCallbacks = (Callbacks) context;
+    }
+
+    @Override
+    public void onDetach() {
+	    super.onDetach();
+	    mCallbacks = null;
+    }
+
+    @Override
 	public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
@@ -109,11 +127,11 @@ public class CrimeListFragment extends Fragment {
     private void addCrime() {
         Crime crime = new Crime();
         CrimeLab.get(getActivity()).addCrime(crime);
-        Intent intent = CrimePagerActivity.newIntent(getActivity(), crime.getId());
-        startActivity(intent);
+        updateUI();
+        mCallbacks.onCrimeSelected(crime);
     }
 
-    private void updateUI() {
+    public void updateUI() {
         CrimeLab crimeLab = CrimeLab.get(getActivity());
         List<Crime> crimes = crimeLab.getCrimes();
         if (mAdapter == null) {
@@ -181,8 +199,7 @@ public class CrimeListFragment extends Fragment {
         public void onClick(View view) {
             Log.d("BUTTON", "PRESSED");
             mAdapterPosition = getAdapterPosition();
-            Intent intent = CrimePagerActivity.newIntent(getActivity(), mCrime.getId());
-            startActivity(intent);
+            mCallbacks.onCrimeSelected(mCrime);
         }
     }
 
