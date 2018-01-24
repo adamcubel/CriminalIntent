@@ -53,13 +53,6 @@
         </LinearLayout>
     </LinearLayout>
 
-
-    <TextView
-        style="?android:listSeparatorTextViewStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/crime_title_label"/>
-
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
