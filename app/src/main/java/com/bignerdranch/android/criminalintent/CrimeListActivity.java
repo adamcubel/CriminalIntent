@@ -8,8 +8,10 @@ import android.support.v4.app.Fragment;
  */
 
 public class CrimeListActivity extends SingleFragmentActivity
-        implements CrimeListFragment.Callbacks, CrimeFragment.Callbacks {
+                               implements CrimeListFragment.Callbacks,
+                                          CrimeFragment.Callbacks {
 
+    // Implementation of abstract method in SingleFragmentActivity
     @Override
     protected Fragment createFragment() {
         return new CrimeListFragment();

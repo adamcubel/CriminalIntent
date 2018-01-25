@@ -14,6 +14,8 @@ import android.support.v7.app.AppCompatActivity;
 
 public abstract class SingleFragmentActivity extends AppCompatActivity {
 
+    // This must be implemented by the classes that inherit this abstract class
+    // in order to create the custom fragment impl
     protected abstract Fragment createFragment();
 
     @LayoutRes

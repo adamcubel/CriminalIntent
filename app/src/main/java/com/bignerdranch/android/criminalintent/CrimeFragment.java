@@ -102,7 +102,7 @@ public class CrimeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Pulls the UUID from the intent used to start the CrimePagerActivity
+        // Pulls the UUID from the intent used to start the fragment
         UUID crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
         // using the crimeId to get the associated crime from CrimeLab
         mCrime = CrimeLab.get(getActivity()).getCrime(crimeId);

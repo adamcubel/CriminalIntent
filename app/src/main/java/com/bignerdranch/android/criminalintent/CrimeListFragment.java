@@ -1,13 +1,11 @@
 package com.bignerdranch.android.criminalintent;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,19 +23,21 @@ import java.util.List;
  * Created by adamc on 1/7/2018.
  */
 
-// This class uses the recycler view to display the fragment on screen
+// This class uses the RecyclerView to display the fragment on screen
 // implementing the necessary methods to create what appears to be a scrolling list of
 // crime fragments on the screen
 public class CrimeListFragment extends Fragment {
-    private RecyclerView mCrimeRecyclerView;
-    private CrimeAdapter mAdapter;
-    private int mAdapterPosition;
-    private LinearLayout mLinearLayout;
-    private Button mAddButton;
-    private boolean mSubtitleVisible;
     private static final String SAVED_POSITION = "SAVED_POSITION";
     private static final String SAVED_SUBTITLE_VISIBLE = "subtitle";
+
     private Callbacks mCallbacks;
+    private RecyclerView mCrimeRecyclerView;
+    private CrimeAdapter mAdapter;
+    private LinearLayout mLinearLayout;
+    private Button mAddButton;
+    private int mAdapterPosition;
+    private boolean mSubtitleVisible;
+
 
 	public interface Callbacks {
 	    void onCrimeSelected(Crime crime);
@@ -56,9 +56,13 @@ public class CrimeListFragment extends Fragment {
     }
 
     @Override
-	public View onCreateView(LayoutInflater inflater,
-                             ViewGroup container,
-                             Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_crime_list, container, false);
 
         mCrimeRecyclerView = (RecyclerView) view.findViewById(R.id.crime_recycler_view);
@@ -103,12 +107,6 @@ public class CrimeListFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-	    super.onCreate(savedInstanceState);
-	    setHasOptionsMenu(true);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.new_crime:
@@ -131,19 +129,22 @@ public class CrimeListFragment extends Fragment {
         mCallbacks.onCrimeSelected(crime);
     }
 
+    // Sets up CrimeListFragment's UI
     public void updateUI() {
+	    // Get the model singleton
         CrimeLab crimeLab = CrimeLab.get(getActivity());
+        // Get the list of crime objects from the singleton
         List<Crime> crimes = crimeLab.getCrimes();
+        // Create a new adapter if one does not exist
         if (mAdapter == null) {
             mAdapter = new CrimeAdapter(crimes);
             mCrimeRecyclerView.setAdapter(mAdapter);
         }
         else {
-            //mAdapter.notifyDataSetChanged();
             mAdapter.setCrimes(crimes);
             mAdapter.notifyItemChanged(mAdapterPosition);
         }
-
+        // If there are crimes, dont display the "create crime" box in the middle of the screen
         if (crimes.size() > 0) {
             mLinearLayout.setVisibility(View.GONE);
         }
@@ -181,6 +182,7 @@ public class CrimeListFragment extends Fragment {
 
         public CrimeHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.list_item_crime, parent, false));
+            // base ViewHolder class variable that holds onto the fragment_crime_list.xml view hierarchy
             itemView.setOnClickListener(this);
 
             mTitleTextView = itemView.findViewById(R.id.crime_title);
@@ -197,8 +199,8 @@ public class CrimeListFragment extends Fragment {
 
         @Override
         public void onClick(View view) {
-            Log.d("BUTTON", "PRESSED");
             mAdapterPosition = getAdapterPosition();
+            // calls callback in CrimeListActivity that starts CrimePagerActivity
             mCallbacks.onCrimeSelected(mCrime);
         }
     }
@@ -211,12 +213,14 @@ public class CrimeListFragment extends Fragment {
             mCrimes = crimes;
         }
 
+        // Called by RecyclerView when it needs a new ViewHolder to display an item with.
         @Override
         public CrimeHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
             return new CrimeHolder(layoutInflater, parent);
         }
 
+        //
         @Override
         public void onBindViewHolder(CrimeHolder holder, int position) {
             Crime crime = mCrimes.get(position);

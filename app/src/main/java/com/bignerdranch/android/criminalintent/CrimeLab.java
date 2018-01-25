@@ -21,6 +21,12 @@ public class CrimeLab {
     private Context mContext;
     private SQLiteDatabase mDatabase;
 
+    // private controller prevents other classes from being able to create an instance of this object,
+    // bypassing the get() method
+    private CrimeLab(Context context) {
+        mContext = context.getApplicationContext();
+        mDatabase = new CrimeBaseHelper(mContext).getWritableDatabase();
+    }
 
     // parameter Context object
     public static CrimeLab get(Context context) {
@@ -70,13 +76,6 @@ public class CrimeLab {
         values.put(CrimeTable.Cols.SOLVED, crime.isSolved() ? 1 : 0);
         values.put(CrimeTable.Cols.SUSPECT, crime.getSuspect());
         return values;
-    }
-
-    // private controller prevents other classes from being able to create an instance of this object,
-    // bypassing the get() method
-    private CrimeLab(Context context) {
-        mContext = context.getApplicationContext();
-        mDatabase = new CrimeBaseHelper(mContext).getWritableDatabase();
     }
 
     public List<Crime> getCrimes() {
